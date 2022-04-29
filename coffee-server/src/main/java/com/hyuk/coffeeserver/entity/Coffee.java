@@ -18,8 +18,9 @@ public class Coffee {
         this.name = name;
         this.category = category;
         this.price = price;
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        this.description = "";
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public Coffee(UUID id, String name, Category category, long price, String description,
