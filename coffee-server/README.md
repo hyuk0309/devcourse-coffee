@@ -1,6 +1,11 @@
 ## To do
-- [ ] 커피 CRUD 개발
-  - [ ] 도메인 개발
-  - [ ] Service Layer 개발
-  - [ ] Repository Layer 개발
-  - [ ] Presentation Layer 개발
+- 커피 CRUD 개발
+  - 도메인 개발
+    - 커피 
+      - [X] 엔티티 개발하기 & 테스트 작성
+  - Service, Repository Layer 개발
+    - [ ] 상품 생성 기능
+    - [ ] 전체 상품 조회 기능
+    - [ ] 상품 조회 기능
+    - [ ] 상품 삭제 기능
+    - [ ] 상품 수정 기능
