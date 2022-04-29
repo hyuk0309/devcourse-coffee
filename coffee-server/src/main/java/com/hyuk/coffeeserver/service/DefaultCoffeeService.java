@@ -1,5 +1,7 @@
 package com.hyuk.coffeeserver.service;
 
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.EXIST_NAME_EXP_MSG;
+
 import com.hyuk.coffeeserver.entity.Category;
 import com.hyuk.coffeeserver.entity.Coffee;
 import com.hyuk.coffeeserver.exception.ServiceException;
@@ -30,7 +32,7 @@ public class DefaultCoffeeService implements CoffeeService {
     private void validateDuplicateName(String name) {
         coffeeRepository.findByName(name)
             .ifPresent(coffee -> {
-                throw new ServiceException("이름이 중복될 수 없습니다.");
+                throw new ServiceException(EXIST_NAME_EXP_MSG);
             });
     }
 }

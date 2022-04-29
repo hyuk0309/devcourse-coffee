@@ -18,7 +18,6 @@ public class Coffee {
         this.name = name;
         this.category = category;
         this.price = price;
-        this.description = "";
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
