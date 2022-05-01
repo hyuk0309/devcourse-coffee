@@ -13,4 +13,6 @@ public interface CoffeeRepository {
     Optional<Coffee> findById(UUID id);
 
     void deleteById(UUID id);
+
+    void deleteAll();
 }

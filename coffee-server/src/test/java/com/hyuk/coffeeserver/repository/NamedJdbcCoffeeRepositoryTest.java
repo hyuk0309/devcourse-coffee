@@ -1,10 +1,13 @@
 package com.hyuk.coffeeserver.repository;
 
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_DELETED_EXP_MSG;
 import static com.wix.mysql.EmbeddedMysql.anEmbeddedMysql;
 import static com.wix.mysql.ScriptResolver.classPathScript;
 import static com.wix.mysql.config.MysqldConfig.aMysqldConfig;
 import static com.wix.mysql.distribution.Version.v8_0_11;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.hyuk.coffeeserver.entity.Category;
 import com.hyuk.coffeeserver.entity.Coffee;
@@ -14,6 +17,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.util.UUID;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,11 +57,16 @@ class NamedJdbcCoffeeRepositoryTest {
         embeddedMysql.stop();
     }
 
+    @AfterEach
+    void clear() {
+        coffeeRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("coffee 삽입")
     void testInsertCoffee() {
         //given
-        var coffee = new Coffee(UUID.randomUUID(), "testCoffee1", Category.AMERICANO, 2000);
+        var coffee = new Coffee(UUID.randomUUID(), "testCoffee", Category.AMERICANO, 2000);
 
         //when
         coffeeRepository.insertCoffee(coffee);
@@ -70,7 +79,7 @@ class NamedJdbcCoffeeRepositoryTest {
     @DisplayName("특정 이름 coffee 조회 - 있음")
     void testFindByNameWhenExist() {
         //given
-        var coffee = new Coffee(UUID.randomUUID(), "testCoffee2", Category.AMERICANO, 2000);
+        var coffee = new Coffee(UUID.randomUUID(), "testCoffee", Category.AMERICANO, 2000L);
         coffeeRepository.insertCoffee(coffee);
 
         //when
@@ -85,10 +94,91 @@ class NamedJdbcCoffeeRepositoryTest {
     void testFindByNameWhenNoExist() {
         //given
         //when
-        var retrievedCoffee = coffeeRepository.findByName("testCoffee3");
+        var retrievedCoffee = coffeeRepository.findByName("testCoffee");
 
         //then
         assertThat(retrievedCoffee).isEmpty();
+    }
+
+    @Test
+    @DisplayName("특정 아이디 coffee 조회 - 있음")
+    void testFindByIdExist() {
+        //given
+        var coffee = new Coffee(UUID.randomUUID(), "testCoffee", Category.AMERICANO, 2500L);
+        coffeeRepository.insertCoffee(coffee);
+
+        //when
+        var retrievedCoffee = coffeeRepository.findById(coffee.getId());
+
+        //then
+        assertAll(
+            () -> assertThat(retrievedCoffee).isNotEmpty(),
+            () -> assertThat(retrievedCoffee.get().getId()).isEqualTo(coffee.getId()),
+            () -> assertThat(retrievedCoffee.get().getName()).isEqualTo(coffee.getName()),
+            () -> assertThat(retrievedCoffee.get().getCategory()).isEqualTo(coffee.getCategory()),
+            () -> assertThat(retrievedCoffee.get().getPrice()).isEqualTo(coffee.getPrice())
+        );
+    }
+
+    @Test
+    @DisplayName("특정 아이디 coffee 조회 - 없음")
+    void testFindByIdNoExist() {
+        //given
+        var invalidId = UUID.randomUUID();
+
+        //when
+        var retrievedCoffee = coffeeRepository.findById(invalidId);
+
+        //then
+        assertThat(retrievedCoffee).isEmpty();
+    }
+
+    @Test
+    @DisplayName("모든 커피 삭제")
+    void testDeleteAll() {
+        //given
+        var coffee = new Coffee(UUID.randomUUID(), "testCoffee", Category.AMERICANO, 2500L);
+        var coffee2 = new Coffee(UUID.randomUUID(), "testCoffee1", Category.LATTE, 4000L);
+
+        coffeeRepository.insertCoffee(coffee);
+        coffeeRepository.insertCoffee(coffee2);
+
+        //when
+        coffeeRepository.deleteAll();
+
+        //then
+        var retrievedCoffee = coffeeRepository.findById(coffee.getId());
+        var retrievedCoffee2 = coffeeRepository.findById(coffee2.getId());
+        assertAll(
+            () -> assertThat(retrievedCoffee).isEmpty(),
+            () -> assertThat(retrievedCoffee2).isEmpty()
+        );
+    }
+
+    @Test
+    @DisplayName("특정 ID coffee 정상 삭제")
+    void testDeleteByIdSuccess() {
+        //given
+        var coffee = new Coffee(UUID.randomUUID(), "coffeeName", Category.AMERICANO, 1500L);
+        coffeeRepository.insertCoffee(coffee);
+
+        //when
+        coffeeRepository.deleteById(coffee.getId());
+
+        //then
+        var retrievedCoffee = coffeeRepository.findById(coffee.getId());
+        assertThat(retrievedCoffee).isEmpty();
+    }
+
+    @Test
+    @DisplayName("특정 ID coffee 삭제 실패")
+    void testDeleteByIdFailBecauseNotExist() {
+        //given
+        //when
+        //then
+        assertThatThrownBy(() -> coffeeRepository.deleteById(UUID.randomUUID()))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining(NOTHING_WAS_DELETED_EXP_MSG);
     }
 
     @Configuration

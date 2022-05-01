@@ -1,5 +1,6 @@
 package com.hyuk.coffeeserver.repository;
 
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_DELETED_EXP_MSG;
 import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_INSERTED_EXP_MSG;
 import static com.hyuk.coffeeserver.util.JdbcUtils.toLocalDateTime;
 import static com.hyuk.coffeeserver.util.JdbcUtils.toUUID;
@@ -34,6 +35,9 @@ public class NamedJdbcCoffeeRepository implements
         "INSERT INTO coffees(coffee_id, name, category, price, description, created_at, updated_at) "
             + "VALUES (UUID_TO_BIN(:id), :name, :category, :price, :description, :createdAt, :updatedAt)";
     private static final String SELECT_BY_NAME_SQL = "SELECT * FROM coffees WHERE name = :name";
+    private static final String SELECT_BY_ID_SQL = "SELECT * FROM coffees WHERE coffee_id = UUID_TO_BIN(:id)";
+    private static final String DELETE_ALL_SQL = "DELETE FROM coffees";
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM coffees where coffee_id = UUID_TO_BIN(:id)";
 
     //ParamMap Key
     private static final String PARAM_ID = "id";
@@ -75,16 +79,33 @@ public class NamedJdbcCoffeeRepository implements
         }
     }
 
-    //to do
     @Override
     public Optional<Coffee> findById(UUID id) {
-        return Optional.empty();
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(
+                SELECT_BY_ID_SQL,
+                Collections.singletonMap(PARAM_ID, id.toString().getBytes()),
+                coffeeRowMapper
+            ));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    //to do
     @Override
     public void deleteById(UUID id) {
+        var delete = jdbcTemplate.update(
+            DELETE_BY_ID_SQL,
+            Collections.singletonMap(PARAM_ID, id.toString().getBytes())
+        );
+        if (delete != 1) {
+            throw new RuntimeException(NOTHING_WAS_DELETED_EXP_MSG);
+        }
+    }
 
+    @Override
+    public void deleteAll() {
+        jdbcTemplate.update(DELETE_ALL_SQL, Collections.emptyMap());
     }
 
     private static final RowMapper<Coffee> coffeeRowMapper = (resultSet, i) -> {

@@ -12,4 +12,5 @@ public class ExceptionMessage {
 
     //Repository 예외 메시지
     public static final String NOTHING_WAS_INSERTED_EXP_MSG = "Nothing was inserted!";
+    public static final String NOTHING_WAS_DELETED_EXP_MSG = "Nothing was deleted";
 }
