@@ -44,6 +44,14 @@ public class DefaultCoffeeService implements CoffeeService {
         return coffeeRepository.findAll();
     }
 
+    @Override
+    public Coffee findCoffee(UUID id) {
+        return coffeeRepository.findById(id)
+            .orElseThrow(() -> {
+                throw new ServiceException(INVALID_COFFEE_ID_EXP_MSG);
+            });
+    }
+
     private void validateValidId(UUID id) {
         coffeeRepository.findById(id)
             .orElseThrow(() -> {

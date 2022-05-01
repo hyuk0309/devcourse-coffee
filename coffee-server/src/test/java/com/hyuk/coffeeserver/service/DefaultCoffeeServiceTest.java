@@ -1,6 +1,7 @@
 package com.hyuk.coffeeserver.service;
 
 import static com.hyuk.coffeeserver.exception.ExceptionMessage.INVALID_COFFEE_ID_EXP_MSG;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -104,5 +105,33 @@ class DefaultCoffeeServiceTest {
 
         //then
         verify(coffeeRepository, times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("특정 ID 커피 조회 성공")
+    void testFindCoffeeSuccess() {
+        //given
+        var coffee = new Coffee(UUID.randomUUID(), "coffeeName", Category.AMERICANO, 2000L);
+        given(coffeeRepository.findById(coffee.getId())).willReturn(Optional.of(coffee));
+
+        //when
+        var retrievedCoffee = coffeeService.findCoffee(coffee.getId());
+
+        //then
+        assertThat(retrievedCoffee.getId()).isEqualTo(coffee.getId());
+    }
+
+    @Test
+    @DisplayName("특정 ID 커피 조회 실패")
+    void testFindCoffeeFailBecauseInvalidId() {
+        //given
+        UUID invalid = UUID.randomUUID();
+        given(coffeeRepository.findById(invalid)).willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(() -> coffeeService.findCoffee(invalid))
+            .isInstanceOf(ServiceException.class)
+            .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG);
     }
 }

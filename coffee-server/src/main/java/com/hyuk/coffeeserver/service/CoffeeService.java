@@ -12,4 +12,6 @@ public interface CoffeeService {
     void removeCoffee(UUID id);
 
     List<Coffee> findAllCoffees();
+
+    Coffee findCoffee(UUID id);
 }
