@@ -2,6 +2,7 @@ package com.hyuk.coffeeserver.repository;
 
 import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_DELETED_EXP_MSG;
 import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_INSERTED_EXP_MSG;
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_UPDATED_EXP_MSG;
 import static com.hyuk.coffeeserver.util.JdbcUtils.toLocalDateTime;
 import static com.hyuk.coffeeserver.util.JdbcUtils.toUUID;
 
@@ -40,6 +41,10 @@ public class NamedJdbcCoffeeRepository implements
     private static final String SELECT_ALL_SQL = "SELECT * FROM coffees";
     private static final String DELETE_ALL_SQL = "DELETE FROM coffees";
     private static final String DELETE_BY_ID_SQL = "DELETE FROM coffees where coffee_id = UUID_TO_BIN(:id)";
+    private static final String UPDATE_BY_ID_SQL =
+        "UPDATE coffees SET name = :name, category = :category, price = :price, description = :description, updated_at = :updatedAt "
+            + "WHERE coffee_id = UUID_TO_BIN(:id)";
+
 
     //ParamMap Key
     private static final String PARAM_ID = "id";
@@ -120,7 +125,14 @@ public class NamedJdbcCoffeeRepository implements
 
     @Override
     public Coffee updateCoffee(Coffee coffee) {
-        return null;
+        var update = jdbcTemplate.update(
+            UPDATE_BY_ID_SQL,
+            toParamMap(coffee)
+        );
+        if (update != 1) {
+            throw new RuntimeException(NOTHING_WAS_UPDATED_EXP_MSG);
+        }
+        return coffee;
     }
 
     private static final RowMapper<Coffee> coffeeRowMapper = (resultSet, i) -> {

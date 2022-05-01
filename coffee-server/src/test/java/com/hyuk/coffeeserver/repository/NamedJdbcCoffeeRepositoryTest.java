@@ -1,6 +1,7 @@
 package com.hyuk.coffeeserver.repository;
 
 import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_DELETED_EXP_MSG;
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_UPDATED_EXP_MSG;
 import static com.wix.mysql.EmbeddedMysql.anEmbeddedMysql;
 import static com.wix.mysql.ScriptResolver.classPathScript;
 import static com.wix.mysql.config.MysqldConfig.aMysqldConfig;
@@ -209,6 +210,41 @@ class NamedJdbcCoffeeRepositoryTest {
         assertThat(coffees).isEmpty();
     }
 
+    @Test
+    @DisplayName("커피 업데이트 성공")
+    void testUpdateCoffeeSuccess() {
+        //given
+        var coffee = new Coffee(UUID.randomUUID(), "coffeeName", Category.AMERICANO, 1000L);
+        coffeeRepository.insertCoffee(coffee);
+
+        String updateName = "updateName";
+        coffee.changeName(updateName);
+
+        //when
+        coffeeRepository.updateCoffee(coffee);
+
+        //then
+        var retrievedCoffee = coffeeRepository.findById(coffee.getId());
+
+        assertAll(
+            () -> assertThat(retrievedCoffee).isNotEmpty(),
+            () -> assertThat(retrievedCoffee.get().getName()).isEqualTo(updateName)
+        );
+    }
+
+    @Test
+    @DisplayName("커피 업데이트 실패")
+    void testUpdateCoffeeFailBecauseNotExist() {
+        //given
+        //db에 존재하지 않는 커피
+        var coffee = new Coffee(UUID.randomUUID(), "coffeeName", Category.AMERICANO, 1000L);
+
+        //when
+        //then
+        assertThatThrownBy(() -> coffeeRepository.updateCoffee(coffee))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining(NOTHING_WAS_UPDATED_EXP_MSG);
+    }
 
     @Configuration
     static class Config {
