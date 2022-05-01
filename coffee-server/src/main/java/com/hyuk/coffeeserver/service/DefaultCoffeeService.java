@@ -1,6 +1,7 @@
 package com.hyuk.coffeeserver.service;
 
 import static com.hyuk.coffeeserver.exception.ExceptionMessage.EXIST_NAME_EXP_MSG;
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.INVALID_COFFEE_ID_EXP_MSG;
 
 import com.hyuk.coffeeserver.entity.Category;
 import com.hyuk.coffeeserver.entity.Coffee;
@@ -27,6 +28,21 @@ public class DefaultCoffeeService implements CoffeeService {
 
         var coffee = new Coffee(UUID.randomUUID(), name, category, price);
         return coffeeRepository.insertCoffee(coffee);
+    }
+
+    @Override
+    @Transactional
+    public void removeCoffee(UUID id) {
+        validateValidId(id);
+
+        coffeeRepository.deleteById(id);
+    }
+
+    private void validateValidId(UUID id) {
+        coffeeRepository.findById(id)
+            .orElseThrow(() -> {
+                throw new ServiceException(INVALID_COFFEE_ID_EXP_MSG);
+            });
     }
 
     private void validateDuplicateName(String name) {

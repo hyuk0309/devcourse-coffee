@@ -1,5 +1,6 @@
 package com.hyuk.coffeeserver.service;
 
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.INVALID_COFFEE_ID_EXP_MSG;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -61,5 +62,35 @@ class DefaultCoffeeServiceTest {
             coffeeService.createCoffee(coffee.getName(), coffee.getCategory(), coffee.getPrice()))
             .isInstanceOf(ServiceException.class)
             .hasMessageContaining("이름이 중복될 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("특정 ID 커피 삭제 성공")
+    void testRemoveCoffeeSuccess() {
+        //given
+        var coffee = new Coffee(UUID.randomUUID(), "coffeeName", Category.AMERICANO, 2000L);
+        given(coffeeRepository.findById(coffee.getId())).willReturn(Optional.of(coffee));
+
+        //when
+        coffeeService.removeCoffee(coffee.getId());
+
+        //then
+        var inOrder = inOrder(coffeeRepository);
+        inOrder.verify(coffeeRepository, times(1)).findById(coffee.getId());
+        inOrder.verify(coffeeRepository, times(1)).deleteById(coffee.getId());
+    }
+
+    @Test
+    @DisplayName("특정 ID 커피 삭제 실패")
+    void testRemoveCoffeeFailBecauseInvalidId() {
+        //given
+        var invalidId = UUID.randomUUID();
+        given(coffeeRepository.findById(invalidId)).willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(() -> coffeeService.removeCoffee(invalidId))
+            .isInstanceOf(ServiceException.class)
+            .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG);
     }
 }

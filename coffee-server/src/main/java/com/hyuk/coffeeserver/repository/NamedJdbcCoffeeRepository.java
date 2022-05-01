@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -72,6 +73,18 @@ public class NamedJdbcCoffeeRepository implements
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    //to do
+    @Override
+    public Optional<Coffee> findById(UUID id) {
+        return Optional.empty();
+    }
+
+    //to do
+    @Override
+    public void deleteById(UUID id) {
+
     }
 
     private static final RowMapper<Coffee> coffeeRowMapper = (resultSet, i) -> {
