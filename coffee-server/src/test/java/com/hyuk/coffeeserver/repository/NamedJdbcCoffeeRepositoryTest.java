@@ -181,6 +181,35 @@ class NamedJdbcCoffeeRepositoryTest {
             .hasMessageContaining(NOTHING_WAS_DELETED_EXP_MSG);
     }
 
+    @Test
+    @DisplayName("모든 커피 조회")
+    void testFindAll() {
+        //given
+        var coffee = new Coffee(UUID.randomUUID(), "coffeeName", Category.AMERICANO, 2000L);
+        var coffee2 = new Coffee(UUID.randomUUID(), "coffeeName2", Category.LATTE, 3000L);
+
+        coffeeRepository.insertCoffee(coffee);
+        coffeeRepository.insertCoffee(coffee2);
+
+        //when
+        var coffees = coffeeRepository.findAll();
+
+        //then
+        assertThat(coffees.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("모든 커피 조회")
+    void testFindAllWhenEmpty() {
+        //given
+        //when
+        var coffees = coffeeRepository.findAll();
+
+        //then
+        assertThat(coffees).isEmpty();
+    }
+
+
     @Configuration
     static class Config {
 

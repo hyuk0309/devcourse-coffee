@@ -37,6 +37,7 @@ public class NamedJdbcCoffeeRepository implements
             + "VALUES (UUID_TO_BIN(:id), :name, :category, :price, :description, :createdAt, :updatedAt)";
     private static final String SELECT_BY_NAME_SQL = "SELECT * FROM coffees WHERE name = :name";
     private static final String SELECT_BY_ID_SQL = "SELECT * FROM coffees WHERE coffee_id = UUID_TO_BIN(:id)";
+    private static final String SELECT_ALL_SQL = "SELECT * FROM coffees";
     private static final String DELETE_ALL_SQL = "DELETE FROM coffees";
     private static final String DELETE_BY_ID_SQL = "DELETE FROM coffees where coffee_id = UUID_TO_BIN(:id)";
 
@@ -111,7 +112,10 @@ public class NamedJdbcCoffeeRepository implements
 
     @Override
     public List<Coffee> findAll() {
-        return null;
+        return jdbcTemplate.query(
+            SELECT_ALL_SQL,
+            coffeeRowMapper
+        );
     }
 
     private static final RowMapper<Coffee> coffeeRowMapper = (resultSet, i) -> {
