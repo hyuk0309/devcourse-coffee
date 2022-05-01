@@ -18,4 +18,6 @@ public interface CoffeeRepository {
     void deleteAll();
 
     List<Coffee> findAll();
+
+    Coffee updateCoffee(Coffee coffee);
 }

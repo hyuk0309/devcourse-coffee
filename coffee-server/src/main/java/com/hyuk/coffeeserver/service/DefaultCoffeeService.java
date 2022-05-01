@@ -52,6 +52,20 @@ public class DefaultCoffeeService implements CoffeeService {
             });
     }
 
+    @Override
+    @Transactional
+    public Coffee updateName(UUID id, String name) {
+        var coffee = coffeeRepository.findById(id)
+            .orElseThrow(() -> {
+                throw new ServiceException(INVALID_COFFEE_ID_EXP_MSG);
+            });
+
+        validateDuplicateName(name);
+
+        coffee.changeName(name);
+        return coffeeRepository.updateCoffee(coffee);
+    }
+
     private void validateValidId(UUID id) {
         coffeeRepository.findById(id)
             .orElseThrow(() -> {

@@ -14,4 +14,6 @@ public interface CoffeeService {
     List<Coffee> findAllCoffees();
 
     Coffee findCoffee(UUID id);
+
+    Coffee updateName(UUID id, String name);
 }

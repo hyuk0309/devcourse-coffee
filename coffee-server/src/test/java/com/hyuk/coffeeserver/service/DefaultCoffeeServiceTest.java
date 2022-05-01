@@ -1,8 +1,10 @@
 package com.hyuk.coffeeserver.service;
 
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.EXIST_NAME_EXP_MSG;
 import static com.hyuk.coffeeserver.exception.ExceptionMessage.INVALID_COFFEE_ID_EXP_MSG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.inOrder;
@@ -134,4 +136,66 @@ class DefaultCoffeeServiceTest {
             .isInstanceOf(ServiceException.class)
             .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG);
     }
+
+    @Test
+    @DisplayName("커피 이름 변경 성공")
+    void testUpdateNameSuccess() {
+        //given
+        var coffee = new Coffee(UUID.randomUUID(), "coffeeName", Category.AMERICANO, 1000L);
+        given(coffeeRepository.findById(coffee.getId())).willReturn(Optional.of(coffee));
+
+        String updateName = "updateName";
+        given(coffeeRepository.findByName(updateName)).willReturn(Optional.empty());
+
+        given(coffeeRepository.updateCoffee(coffee)).willReturn(coffee);
+
+        //when
+        var updatedCoffee = coffeeService.updateName(coffee.getId(), updateName);
+
+        //then
+        var inOrder = inOrder(coffeeRepository);
+        inOrder.verify(coffeeRepository, times(1)).findById(coffee.getId());
+        inOrder.verify(coffeeRepository, times(1)).findByName(updateName);
+        inOrder.verify(coffeeRepository, times(1)).updateCoffee(coffee);
+
+        assertAll(
+            () -> assertThat(updatedCoffee.getId()).isEqualTo(coffee.getId()),
+            () -> assertThat(updatedCoffee.getName()).isEqualTo(updateName)
+        );
+    }
+
+    @Test
+    @DisplayName("커피 이름 변경 실패 - 존재하지 않는 커피")
+    void testUpdateNameFailBecauseInvalidId() {
+        //given
+        var invalidId = UUID.randomUUID();
+        given(coffeeRepository.findById(invalidId)).willReturn(Optional.empty());
+
+        String updateName = "updateName";
+
+        //when
+        //then
+        assertThatThrownBy(() -> coffeeService.updateName(invalidId, updateName))
+            .isInstanceOf(ServiceException.class)
+            .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG);
+    }
+
+    @Test
+    @DisplayName("커피 이름 변경 실패 - 중복되는 이름")
+    void testUpdateNameFailBecauseDuplicateName() {
+        //given
+        var coffee = new Coffee(UUID.randomUUID(), "coffeeName", Category.AMERICANO, 1000L);
+        given(coffeeRepository.findById(coffee.getId())).willReturn(Optional.of(coffee));
+
+        String updateName = "updateName";
+        var existCoffee = new Coffee(UUID.randomUUID(), "updateName", Category.AMERICANO, 2000L);
+        given(coffeeRepository.findByName(updateName)).willReturn(Optional.of(existCoffee));
+
+        //when
+        //then
+        assertThatThrownBy(() -> coffeeService.updateName(coffee.getId(), updateName))
+            .isInstanceOf(ServiceException.class)
+            .hasMessageContaining(EXIST_NAME_EXP_MSG);
+    }
+
 }

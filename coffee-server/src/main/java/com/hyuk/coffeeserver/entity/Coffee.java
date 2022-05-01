@@ -11,7 +11,7 @@ public class Coffee {
     private long price;
     private String description;
     private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     public Coffee(UUID id, String name, Category category, long price) {
         this.id = id;
@@ -59,5 +59,10 @@ public class Coffee {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void changeName(String name) {
+        this.name = name;
+        this.updatedAt = LocalDateTime.now();
     }
 }

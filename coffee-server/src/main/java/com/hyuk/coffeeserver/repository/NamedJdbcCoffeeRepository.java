@@ -118,6 +118,11 @@ public class NamedJdbcCoffeeRepository implements
         );
     }
 
+    @Override
+    public Coffee updateCoffee(Coffee coffee) {
+        return null;
+    }
+
     private static final RowMapper<Coffee> coffeeRowMapper = (resultSet, i) -> {
         var id = toUUID(resultSet.getBytes(COLUMN_COFFEE_ID));
         var name = resultSet.getString(COLUMN_NAME);
