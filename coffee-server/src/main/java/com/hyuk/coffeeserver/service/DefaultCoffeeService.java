@@ -7,6 +7,7 @@ import com.hyuk.coffeeserver.entity.Category;
 import com.hyuk.coffeeserver.entity.Coffee;
 import com.hyuk.coffeeserver.exception.ServiceException;
 import com.hyuk.coffeeserver.repository.CoffeeRepository;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,11 @@ public class DefaultCoffeeService implements CoffeeService {
         validateValidId(id);
 
         coffeeRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Coffee> findAllCoffees() {
+        return coffeeRepository.findAll();
     }
 
     private void validateValidId(UUID id) {

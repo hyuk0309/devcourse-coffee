@@ -9,6 +9,7 @@ import com.hyuk.coffeeserver.entity.Category;
 import com.hyuk.coffeeserver.entity.Coffee;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -106,6 +107,11 @@ public class NamedJdbcCoffeeRepository implements
     @Override
     public void deleteAll() {
         jdbcTemplate.update(DELETE_ALL_SQL, Collections.emptyMap());
+    }
+
+    @Override
+    public List<Coffee> findAll() {
+        return null;
     }
 
     private static final RowMapper<Coffee> coffeeRowMapper = (resultSet, i) -> {

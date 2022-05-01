@@ -1,6 +1,7 @@
 package com.hyuk.coffeeserver.repository;
 
 import com.hyuk.coffeeserver.entity.Coffee;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,4 +16,6 @@ public interface CoffeeRepository {
     void deleteById(UUID id);
 
     void deleteAll();
+
+    List<Coffee> findAll();
 }

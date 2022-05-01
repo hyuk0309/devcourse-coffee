@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.hyuk.coffeeserver.entity.Category;
 import com.hyuk.coffeeserver.entity.Coffee;
@@ -92,5 +93,16 @@ class DefaultCoffeeServiceTest {
         assertThatThrownBy(() -> coffeeService.removeCoffee(invalidId))
             .isInstanceOf(ServiceException.class)
             .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG);
+    }
+
+    @Test
+    @DisplayName("모든 커피 조회")
+    void testFindAllCoffees() {
+        //given
+        //when
+        coffeeService.findAllCoffees();
+
+        //then
+        verify(coffeeRepository, times(1)).findAll();
     }
 }
