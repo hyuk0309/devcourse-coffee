@@ -72,4 +72,19 @@ class CoffeeControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/coffees"));
     }
+
+    @Test
+    @DisplayName("커피 상세 페이지 조회")
+    void testViewCoffee() throws Exception {
+        //given
+        var coffee = new Coffee(UUID.randomUUID(), "coffeeName", Category.AMERICANO, 1000L);
+        given(coffeeService.findCoffee(coffee.getId())).willReturn(coffee);
+
+        //when
+        //then
+        mockMvc.perform(get("/coffees/" + coffee.getId().toString()))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("coffee"))
+            .andExpect(view().name("coffee/coffee"));
+    }
 }

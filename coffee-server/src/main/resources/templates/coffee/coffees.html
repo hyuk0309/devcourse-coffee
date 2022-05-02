@@ -30,7 +30,7 @@
   </thead>
   <tbody>
   <tr th:each="coffee: ${coffees}" th:object="${coffee}">
-    <td th:text="*{id}"></td>
+    <td><a th:href="@{/coffees/{coffeeId}(coffeeId = *{id})}" th:text="*{id}"></a></td>
     <td th:text="*{name}"></td>
     <td th:text="*{category}"></td>
     <td th:text="*{price}"></td>
