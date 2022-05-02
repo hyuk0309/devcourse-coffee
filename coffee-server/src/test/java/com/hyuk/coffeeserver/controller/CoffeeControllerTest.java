@@ -2,7 +2,9 @@ package com.hyuk.coffeeserver.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -57,4 +59,17 @@ class CoffeeControllerTest {
             .andExpect(view().name("coffee/new-form"));
     }
 
+    @Test
+    @DisplayName("커피 생성 요청")
+    void testCreateCoffee() throws Exception {
+        //given
+        //when
+        //then
+        mockMvc.perform(post("/coffees/new")
+                .param("name", "coffeeName")
+                .param("category", Category.AMERICANO.name())
+                .param("price", "1000"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/coffees"));
+    }
 }
