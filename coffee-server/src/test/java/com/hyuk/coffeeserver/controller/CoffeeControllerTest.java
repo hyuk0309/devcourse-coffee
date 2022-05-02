@@ -46,4 +46,15 @@ class CoffeeControllerTest {
             .andExpect(view().name("coffee/coffees"));
     }
 
+    @Test
+    @DisplayName("커피 생성 폼 조회")
+    void testViewCreateForm() throws Exception {
+        //given
+        //when
+        //then
+        mockMvc.perform(get("/coffees/new"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("coffee/new-form"));
+    }
+
 }

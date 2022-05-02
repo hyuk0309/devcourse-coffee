@@ -22,4 +22,9 @@ public class CoffeeController {
         model.addAttribute("coffees", coffees);
         return "coffee/coffees";
     }
+
+    @GetMapping("/new")
+    public String viewCreateForm() {
+        return "coffee/new-form";
+    }
 }
