@@ -26,6 +26,7 @@
     <th scope="col">Name</th>
     <th scope="col">Category</th>
     <th scope="col">Price</th>
+    <th scope="col">Delete</th>
   </tr>
   </thead>
   <tbody>
@@ -34,8 +35,23 @@
     <td th:text="*{name}"></td>
     <td th:text="*{category}"></td>
     <td th:text="*{price}"></td>
+    <td>
+      <a th:href="'javascript:deleteVoucher('+'\'' + *{id}+'\')'"
+         class="btn btn-danger">
+        DELETE
+      </a>
+    </td>
   </tr>
   </tbody>
 </table>
 </body>
+<script>
+  function deleteVoucher(id) {
+    var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "/coffees/" + id + "/delete");
+    document.body.appendChild(form);
+    form.submit();
+  }
+</script>
 </html>

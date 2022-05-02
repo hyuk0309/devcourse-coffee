@@ -48,4 +48,10 @@ public class CoffeeController {
         );
         return "redirect:/coffees";
     }
+
+    @PostMapping("/{coffeeId}/delete")
+    public String deleteCoffee(@PathVariable("coffeeId") UUID coffeeId) {
+        coffeeService.removeCoffee(coffeeId);
+        return "redirect:/coffees";
+    }
 }

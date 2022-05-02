@@ -87,4 +87,15 @@ class CoffeeControllerTest {
             .andExpect(model().attributeExists("coffee"))
             .andExpect(view().name("coffee/coffee"));
     }
+
+    @Test
+    @DisplayName("커피 삭제 요청")
+    void testDeleteCoffee() throws Exception {
+        //given
+        //when
+        //then
+        mockMvc.perform(post("/coffees/" + UUID.randomUUID().toString() + "/delete"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/coffees"));
+    }
 }
