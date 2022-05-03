@@ -95,7 +95,7 @@ class DefaultCoffeeServiceTest {
         //then
         assertThatThrownBy(() -> coffeeService.removeCoffee(invalidId))
             .isInstanceOf(ServiceException.class)
-            .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG);
+            .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG.toString());
     }
 
     @Test
@@ -134,7 +134,7 @@ class DefaultCoffeeServiceTest {
         //then
         assertThatThrownBy(() -> coffeeService.findCoffee(invalid))
             .isInstanceOf(ServiceException.class)
-            .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG);
+            .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG.toString());
     }
 
     @Test
@@ -177,7 +177,7 @@ class DefaultCoffeeServiceTest {
         //then
         assertThatThrownBy(() -> coffeeService.updateName(invalidId, updateName))
             .isInstanceOf(ServiceException.class)
-            .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG);
+            .hasMessageContaining(INVALID_COFFEE_ID_EXP_MSG.toString());
     }
 
     @Test
@@ -195,7 +195,7 @@ class DefaultCoffeeServiceTest {
         //then
         assertThatThrownBy(() -> coffeeService.updateName(coffee.getId(), updateName))
             .isInstanceOf(ServiceException.class)
-            .hasMessageContaining(EXIST_NAME_EXP_MSG);
+            .hasMessageContaining(EXIST_NAME_EXP_MSG.toString());
     }
 
 }

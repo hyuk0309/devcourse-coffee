@@ -29,6 +29,6 @@ class NickNameTest {
         //then
         assertThatThrownBy(() -> new NickName("too long............."))
             .isInstanceOf(ServiceException.class)
-            .hasMessageContaining(INVALID_NICKNAME_FORMAT_EXP_MSG);
+            .hasMessageContaining(INVALID_NICKNAME_FORMAT_EXP_MSG.toString());
     }
 }

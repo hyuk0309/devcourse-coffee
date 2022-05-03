@@ -48,7 +48,7 @@ public class DefaultCoffeeService implements CoffeeService {
     public Coffee findCoffee(UUID id) {
         return coffeeRepository.findById(id)
             .orElseThrow(() -> {
-                throw new ServiceException(INVALID_COFFEE_ID_EXP_MSG);
+                throw new ServiceException(INVALID_COFFEE_ID_EXP_MSG.toString());
             });
     }
 
@@ -57,7 +57,7 @@ public class DefaultCoffeeService implements CoffeeService {
     public Coffee updateName(UUID id, String name) {
         var coffee = coffeeRepository.findById(id)
             .orElseThrow(() -> {
-                throw new ServiceException(INVALID_COFFEE_ID_EXP_MSG);
+                throw new ServiceException(INVALID_COFFEE_ID_EXP_MSG.toString());
             });
 
         validateDuplicateName(name);
@@ -69,14 +69,14 @@ public class DefaultCoffeeService implements CoffeeService {
     private void validateValidId(UUID id) {
         coffeeRepository.findById(id)
             .orElseThrow(() -> {
-                throw new ServiceException(INVALID_COFFEE_ID_EXP_MSG);
+                throw new ServiceException(INVALID_COFFEE_ID_EXP_MSG.toString());
             });
     }
 
     private void validateDuplicateName(String name) {
         coffeeRepository.findByName(name)
             .ifPresent(coffee -> {
-                throw new ServiceException(EXIST_NAME_EXP_MSG);
+                throw new ServiceException(EXIST_NAME_EXP_MSG.toString());
             });
     }
 }

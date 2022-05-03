@@ -179,7 +179,7 @@ class NamedJdbcCoffeeRepositoryTest {
         //then
         assertThatThrownBy(() -> coffeeRepository.deleteById(UUID.randomUUID()))
             .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining(NOTHING_WAS_DELETED_EXP_MSG);
+            .hasMessageContaining(NOTHING_WAS_DELETED_EXP_MSG.toString());
     }
 
     @Test
@@ -243,7 +243,7 @@ class NamedJdbcCoffeeRepositoryTest {
         //then
         assertThatThrownBy(() -> coffeeRepository.updateCoffee(coffee))
             .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining(NOTHING_WAS_UPDATED_EXP_MSG);
+            .hasMessageContaining(NOTHING_WAS_UPDATED_EXP_MSG.toString());
     }
 
     @Configuration

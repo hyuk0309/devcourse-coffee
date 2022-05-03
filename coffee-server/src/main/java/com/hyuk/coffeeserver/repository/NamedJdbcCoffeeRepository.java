@@ -68,7 +68,7 @@ public class NamedJdbcCoffeeRepository implements
             INSERT_SQL,
             toParamMap(coffee));
         if (insert != 1) {
-            throw new RuntimeException(NOTHING_WAS_INSERTED_EXP_MSG);
+            throw new RuntimeException(NOTHING_WAS_INSERTED_EXP_MSG.toString());
         }
         return coffee;
     }
@@ -106,7 +106,7 @@ public class NamedJdbcCoffeeRepository implements
             Collections.singletonMap(PARAM_ID, id.toString().getBytes())
         );
         if (delete != 1) {
-            throw new RuntimeException(NOTHING_WAS_DELETED_EXP_MSG);
+            throw new RuntimeException(NOTHING_WAS_DELETED_EXP_MSG.toString());
         }
     }
 
@@ -130,7 +130,7 @@ public class NamedJdbcCoffeeRepository implements
             toParamMap(coffee)
         );
         if (update != 1) {
-            throw new RuntimeException(NOTHING_WAS_UPDATED_EXP_MSG);
+            throw new RuntimeException(NOTHING_WAS_UPDATED_EXP_MSG.toString());
         }
         return coffee;
     }

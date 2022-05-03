@@ -38,7 +38,7 @@ public class NickName {
 
     private void validateNickNameFormat(String nickName) {
         if (nickName.length() >= 10) {
-            throw new ServiceException(INVALID_NICKNAME_FORMAT_EXP_MSG);
+            throw new ServiceException(INVALID_NICKNAME_FORMAT_EXP_MSG.toString());
         }
     }
 }
