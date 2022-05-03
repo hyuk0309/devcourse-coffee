@@ -12,12 +12,10 @@ CREATE TABLE coffees
 
 CREATE TABLE orders
 (
-    order_id    binary(16) PRIMARY KEY,
-    email       VARCHAR(50)  NOT NULL,
-    address     VARCHAR(200) NOT NULL,
-    postcode    VARCHAR(200) NOT NULL,
-    order_status VARCHAR(50)  NOT NULL,
-    created_at   datetime(6)  NOT NULL,
+    order_id     binary(16) PRIMARY KEY,
+    nick_name    VARCHAR(50) NOT NULL,
+    order_status VARCHAR(50) NOT NULL,
+    created_at   datetime(6) NOT NULL,
     updated_at   datetime(6) DEFAULT NULL
 );
 
