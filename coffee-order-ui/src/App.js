@@ -1,24 +1,41 @@
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.css'
+import {useState} from "react";
+import {ProductList} from "./components/ProductList";
+import {Summary} from "./components/Summary";
 
 function App() {
+  const [products, setProducts] = useState([
+    {id: 'uuid-1', productName: '콜롬비아 커피 1', category: '커피빈', price: 1000},
+    {id: 'uuid-2', productName: '콜롬비아 커피 2', category: '커피빈', price: 2000},
+    {id: 'uuid-3', productName: '콜롬비아 커피 3', category: '커피빈', price: 3000}
+  ])
+  const [items, setItems] = useState([])
+  const handleAddClicked = id => {
+    const product = products.find(v => v.id === id);
+    const found = items.find(v => v.id === id);
+    const updatedItems =
+        found ? items.map(v => (v.id === id) ? {...v, count: v.count + 1} : v) : [...items, {...product, count: 1}];
+    setItems(updatedItems);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="container-fluid">
+        <div className="row justify-content-center m-4">
+          <h1 className="text-center">Hyuk's Cafe</h1>
+        </div>
+        <div className="card">
+          <div className="row">
+            <div
+                className="col-md-8 mt-4 d-flex flex-column align-items-start p-3 pt-0">
+              <ProductList products={products} onAddClick={handleAddClicked}/>
+            </div>
+            <div className="col-md-4 summary p-4">
+              <Summary items={items}/>
+            </div>
+          </div>
+        </div>
+      </div>
   );
 }
 
