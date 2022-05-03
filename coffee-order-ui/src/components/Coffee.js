@@ -1,9 +1,9 @@
 import React from "react";
 import coffeePath from './coffee.jpeg'
 
-export function Product(props) {
+export function Coffee(props) {
   const id = props.id;
-  const productName = props.productName;
+  const name = props.name;
   const category = props.category;
   const price = props.price;
   const handleAddBtnClicked = e => {
@@ -16,7 +16,7 @@ export function Product(props) {
                                     alt=""/></div>
         <div className="col">
           <div className="row text-muted">{category}</div>
-          <div className="row">{productName}</div>
+          <div className="row">{name}</div>
         </div>
         <div className="col text-center price">{price}원</div>
         <div className="col text-end action">

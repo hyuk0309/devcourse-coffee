@@ -10,7 +10,7 @@ export function Summary({items = []}) {
         </div>
         <hr/>
         {items.map(v => <SummaryItem key={v.id} count={v.count}
-                                     productName={v.productName}/>)}
+                                     name={v.name}/>)}
         <form>
           <div className="mb-3">
             <label htmlFor="nickName" className="form-label">닉네임</label>
