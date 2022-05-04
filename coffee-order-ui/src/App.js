@@ -18,8 +18,27 @@ function App() {
   }
   useEffect(() => {
     axios.get('http://localhost:8080/api/v1/coffees')
-        .then(v => setCoffees(v.data));
+    .then(v => setCoffees(v.data));
   }, []);
+  const handleOrderSubmit = (order) => {
+    if (items.length === 0) {
+      alert("아이템을 추가해 주세요!");
+    } else {
+      axios.post('http://localhost:8080/api/v1/orders', {
+        nickName: order.nickName,
+        orderItems: items.map(v => ({
+          coffeeId: v.id,
+          category: v.category,
+          price: v.price,
+          quantity: v.count
+        }))
+      }).then(v => alert("주문이 정상적으로 접수되었습니다."),
+          e => {
+            alert("서버 장애");
+            console.error(e);
+          })
+    }
+  }
 
   return (
       <div className="container-fluid">
@@ -33,7 +52,7 @@ function App() {
               <CoffeeList coffees={coffees} onAddClick={handleAddClicked}/>
             </div>
             <div className="col-md-4 summary p-4">
-              <Summary items={items}/>
+              <Summary items={items} onOrderSubmit={handleOrderSubmit}/>
             </div>
           </div>
         </div>
