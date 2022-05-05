@@ -23,18 +23,25 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringJUnitConfig
 @TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Transactional
 class NamedJdbcOrderRepositoryTest {
 
     @Autowired
@@ -45,8 +52,11 @@ class NamedJdbcOrderRepositoryTest {
 
     EmbeddedMysql embeddedMysql;
 
+    Coffee coffee;
+
     @BeforeAll
     void setUp() {
+        //embedded db set up
         var mysqldConfig = aMysqldConfig(v8_0_11)
             .withCharset(Charset.UTF8)
             .withPort(2215)
@@ -56,6 +66,10 @@ class NamedJdbcOrderRepositoryTest {
         embeddedMysql = anEmbeddedMysql(mysqldConfig)
             .addSchema("test-coffee_mgmt", classPathScript("schema.sql"))
             .start();
+
+        //coffee data set up
+        coffee = new Coffee(UUID.randomUUID(), "sweet americano", Category.AMERICANO, 1000L);
+        coffeeRepository.insertCoffee(coffee);
     }
 
     @AfterAll
@@ -64,12 +78,9 @@ class NamedJdbcOrderRepositoryTest {
     }
 
     @Test
-    @DisplayName("데이터 정상 저장")
+    @DisplayName("주문 정상 저장")
     void testInsertSuccess() {
         //given
-        var coffee = new Coffee(UUID.randomUUID(), "sweet americano", Category.AMERICANO, 1000L);
-        coffeeRepository.insertCoffee(coffee);
-
         var orderItems = List.of(
             new OrderItem(coffee.getId(), coffee.getCategory(), coffee.getPrice(), 1));
 
@@ -91,6 +102,30 @@ class NamedJdbcOrderRepositoryTest {
         );
     }
 
+    @Test
+    @DisplayName("전체 주문 생성일 기준 내림 차순 조회")
+    void testFindOrdersOrderByCreatedAtSuccess() {
+        //given
+        var orderItems = List.of(
+            new OrderItem(coffee.getId(), coffee.getCategory(), coffee.getPrice(), 1));
+
+        var order = new Order(
+            UUID.randomUUID(),
+            new NickName("test"),
+            orderItems,
+            OrderStatus.ORDERED,
+            LocalDateTime.now(),
+            LocalDateTime.now());
+
+        orderRepository.insert(order);
+
+        //when
+        var orders = orderRepository.findOrdersOrderByCreatedAt();
+
+        //then
+        assertThat(orders.size()).isEqualTo(1);
+    }
+
     @Configuration
     static class Config {
 
@@ -102,6 +137,11 @@ class NamedJdbcOrderRepositoryTest {
                 .password("test1234!")
                 .type(HikariDataSource.class)
                 .build();
+        }
+
+        @Bean
+        public TransactionManager transactionManager(DataSource dataSource) {
+            return new DataSourceTransactionManager(dataSource);
         }
 
         @Bean

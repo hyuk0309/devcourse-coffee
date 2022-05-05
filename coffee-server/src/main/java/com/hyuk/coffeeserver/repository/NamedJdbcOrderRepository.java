@@ -1,11 +1,19 @@
 package com.hyuk.coffeeserver.repository;
 
+import static com.hyuk.coffeeserver.util.JdbcUtils.toLocalDateTime;
+import static com.hyuk.coffeeserver.util.JdbcUtils.toUUID;
+
+import com.hyuk.coffeeserver.entity.NickName;
 import com.hyuk.coffeeserver.entity.Order;
 import com.hyuk.coffeeserver.entity.OrderItem;
+import com.hyuk.coffeeserver.entity.OrderStatus;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +42,31 @@ public class NamedJdbcOrderRepository implements OrderRepository {
         );
         return order;
     }
+
+    @Override
+    public List<Order> findOrdersOrderByCreatedAt() {
+        return jdbcTemplate.query(
+            "SELECT * FROM orders ORDER BY created_at DESC",
+            Collections.emptyMap(),
+            orderRowMapper
+        );
+    }
+
+    private static final RowMapper<Order> orderRowMapper = (resultSet, i) -> {
+        var orderId = toUUID(resultSet.getBytes("order_id"));
+        var nickName = new NickName(resultSet.getString("nick_name"));
+        var orderStatus = OrderStatus.valueOf(resultSet.getString("order_status"));
+        var createdAt = toLocalDateTime(resultSet.getTimestamp("created_at"));
+        var updatedAt = toLocalDateTime(resultSet.getTimestamp("updated_at"));
+        return new Order(
+            orderId,
+            nickName,
+            null,
+            orderStatus,
+            createdAt,
+            updatedAt
+        );
+    };
 
     private Map<String, Object> toOrderParamMap(Order order) {
         var paramMap = new HashMap<String, Object>();
