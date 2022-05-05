@@ -30,4 +30,9 @@ public class DefaultOrderService implements OrderService {
             LocalDateTime.now());
         return orderRepository.insert(order);
     }
+
+    @Override
+    public List<Order> searchOrdersOrderByCreatedAt() {
+        return orderRepository.findOrdersOrderByCreatedAt();
+    }
 }

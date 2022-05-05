@@ -8,4 +8,6 @@ import java.util.List;
 public interface OrderService {
 
     Order createOrder(NickName nickName, List<OrderItem> items);
+
+    List<Order> searchOrdersOrderByCreatedAt();
 }
