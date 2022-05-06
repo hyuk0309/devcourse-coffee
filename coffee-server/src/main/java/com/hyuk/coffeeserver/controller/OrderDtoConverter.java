@@ -1,7 +1,10 @@
 package com.hyuk.coffeeserver.controller;
 
 import com.hyuk.coffeeserver.dto.OrderDto;
+import com.hyuk.coffeeserver.dto.OrderDtoWithItemDtos;
+import com.hyuk.coffeeserver.dto.OrderItemDto;
 import com.hyuk.coffeeserver.entity.Order;
+import com.hyuk.coffeeserver.entity.OrderItem;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +26,30 @@ public class OrderDtoConverter {
             order.getNickName().getNickName(),
             order.getOrderStatus().toString(),
             order.getCreatedAt()
+        );
+    }
+
+    //to do
+    public static OrderDtoWithItemDtos toOrderDtoWithItem(Order order) {
+        List<OrderItemDto> orderItemDtos = order.getOrderItems().stream()
+            .map(OrderDtoConverter::toOrderItemDto)
+            .collect(Collectors.toList());
+        return new OrderDtoWithItemDtos(
+            order.getOrderId(),
+            order.getNickName().getNickName(),
+            orderItemDtos,
+            order.getOrderStatus().toString(),
+            order.getCreatedAt(),
+            order.getUpdatedAt()
+        );
+    }
+
+    private static OrderItemDto toOrderItemDto(OrderItem orderItem) {
+        return new OrderItemDto(
+            orderItem.getCoffeeId(),
+            orderItem.getCategory().toString(),
+            orderItem.getPrice(),
+            orderItem.getQuantity()
         );
     }
 }

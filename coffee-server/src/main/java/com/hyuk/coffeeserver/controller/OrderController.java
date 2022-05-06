@@ -1,11 +1,14 @@
 package com.hyuk.coffeeserver.controller;
 
 import static com.hyuk.coffeeserver.controller.OrderDtoConverter.toOrderDtoList;
+import static com.hyuk.coffeeserver.controller.OrderDtoConverter.toOrderDtoWithItem;
 
 import com.hyuk.coffeeserver.service.OrderService;
+import java.util.UUID;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -23,5 +26,12 @@ public class OrderController {
         var orderDtos = toOrderDtoList(orderService.searchOrdersOrderByCreatedAt());
         model.addAttribute("orderDtos", orderDtos);
         return "order/orders";
+    }
+
+    @GetMapping("/{orderId}")
+    public String viewOrder(@PathVariable("orderId") UUID orderId, Model model) {
+        var orderDtoWithItem = toOrderDtoWithItem(orderService.searchOrderWithOrderItems(orderId));
+        model.addAttribute("orderDtoWithItem", orderDtoWithItem);
+        return "order/order";
     }
 }
