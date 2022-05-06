@@ -12,4 +12,6 @@ public interface OrderRepository {
     List<Order> findOrdersOrderByCreatedAt();
 
     Optional<Order> findOrderWithOrderItems(UUID orderId);
+
+    void updateOrderStatusByOrderId(UUID orderId);
 }

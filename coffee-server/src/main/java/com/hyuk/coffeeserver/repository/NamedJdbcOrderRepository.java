@@ -72,6 +72,11 @@ public class NamedJdbcOrderRepository implements OrderRepository {
         return Optional.of(order);
     }
 
+    @Override
+    public void updateOrderStatusByOrderId(UUID orderId) {
+        
+    }
+
     private static final ResultSetExtractor<Order> extractOrderWithOrderItems = (resultSet) -> {
         UUID orderId = null;
         NickName nickName = null;

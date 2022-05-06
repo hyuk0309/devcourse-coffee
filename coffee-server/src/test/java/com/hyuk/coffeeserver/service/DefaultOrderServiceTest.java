@@ -105,4 +105,17 @@ class DefaultOrderServiceTest {
             .isInstanceOf(ServiceException.class)
             .hasMessageContaining(INVALID_ORDER_ID_EXP_MSG.toString());
     }
+
+    @Test
+    @DisplayName("주문 상태 변경")
+    void testChangeOrderStatus() {
+        //given
+        var orderId = UUID.randomUUID();
+
+        //when
+        orderService.changeOrderStatus(orderId);
+
+        //then
+        verify(orderRepository).updateOrderStatusByOrderId(orderId);
+    }
 }

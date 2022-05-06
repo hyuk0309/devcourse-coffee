@@ -12,8 +12,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class DefaultOrderService implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -23,6 +25,7 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order createOrder(NickName nickName, List<OrderItem> items) {
         var order = new Order(
             UUID.randomUUID(),
@@ -48,7 +51,8 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
+    @Transactional
     public void changeOrderStatus(UUID orderId) {
-        
+        orderRepository.updateOrderStatusByOrderId(orderId);
     }
 }
