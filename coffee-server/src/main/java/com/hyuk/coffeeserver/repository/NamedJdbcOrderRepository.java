@@ -60,7 +60,11 @@ public class NamedJdbcOrderRepository implements OrderRepository {
 
     @Override
     public List<Order> findOrdersOrderByCreatedAt(OrderStatus orderStatus) {
-        return null;
+        return jdbcTemplate.query(
+            "SELECT * FROM orders WHERE order_status = :orderStatus ORDER BY created_at DESC",
+            Collections.singletonMap("orderStatus", orderStatus.name()),
+            orderRowMapper
+        );
     }
 
     @Override

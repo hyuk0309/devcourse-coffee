@@ -31,6 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -124,6 +126,31 @@ class NamedJdbcOrderRepositoryTest {
 
         //when
         var orders = orderRepository.findOrdersOrderByCreatedAt();
+
+        //then
+        assertThat(orders.size()).isEqualTo(1);
+    }
+
+    @ParameterizedTest
+    @EnumSource(OrderStatus.class)
+    @DisplayName("전체 주문 생성일 기준 내림 차순 조회 - 특정 상태 주문만")
+    void testFindOrdersOrderByCreatedAtWithOrderStatusSuccess(OrderStatus orderStatus) {
+        //given
+        var orderItems = List.of(
+            new OrderItem(coffee.getId(), coffee.getCategory(), coffee.getPrice(), 1));
+
+        var order = new Order(
+            UUID.randomUUID(),
+            new NickName("test"),
+            orderItems,
+            orderStatus,
+            LocalDateTime.now(),
+            LocalDateTime.now());
+
+        orderRepository.insert(order);
+
+        //when
+        var orders = orderRepository.findOrdersOrderByCreatedAt(orderStatus);
 
         //then
         assertThat(orders.size()).isEqualTo(1);
