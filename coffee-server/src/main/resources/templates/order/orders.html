@@ -36,7 +36,7 @@
     <td th:text="*{orderStatus}"></td>
     <td th:text="*{createdAt}"></td>
     <td>
-      <a th:href="'javascript:deleteVoucher('+'\'' + *{orderId}+'\')'"
+      <a th:href="'javascript:deleteOrder('+'\'' + *{orderId}+'\')'"
          class="btn btn-danger">
         DELETE
       </a>
@@ -46,7 +46,7 @@
 </table>
 </body>
 <script>
-  function deleteVoucher(id) {
+  function deleteOrder(id) {
     var form = document.createElement("form");
     form.setAttribute("method", "post");
     form.setAttribute("action", "/orders/" + id + "/delete");
