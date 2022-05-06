@@ -1,5 +1,6 @@
 package com.hyuk.coffeeserver.controller;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,7 +39,7 @@ class OrderControllerTest {
 
     @Test
     @DisplayName("전체 주문 페이지 조회")
-    void testViewOrdersSuccess() throws Exception {
+    void testViewOrdersWithoutOrderStatusSuccess() throws Exception {
         //given
         var order1 = new Order(UUID.randomUUID(), new NickName("test1"),
             null, OrderStatus.ORDERED, LocalDateTime.now(), LocalDateTime.now());
@@ -49,6 +52,25 @@ class OrderControllerTest {
         mockMvc.perform(get("/orders"))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("orderDtos"))
+            .andExpect(view().name("order/orders"));
+    }
+
+    @ParameterizedTest
+    @EnumSource(OrderStatus.class)
+    @DisplayName("전체 주문 페이지 조회 - 특정 상태의 주문만")
+    void testViewOrdersWithOrderStatusSuccess(OrderStatus orderStatus) throws Exception {
+        //given
+        var order = new Order(UUID.randomUUID(), new NickName("test1"),
+            null, orderStatus, LocalDateTime.now(), LocalDateTime.now());
+        given(orderService.searchOrdersOrderByCreatedAt(orderStatus))
+            .willReturn(List.of(order));
+
+        //when
+        //then
+        mockMvc.perform(get("/orders?orderStatus=" + orderStatus.name()))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("orderDtos"))
+            .andExpect(model().attribute("orderDtos", hasSize(1)))
             .andExpect(view().name("order/orders"));
     }
 

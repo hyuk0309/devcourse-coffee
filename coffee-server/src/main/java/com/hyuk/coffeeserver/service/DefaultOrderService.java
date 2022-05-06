@@ -42,6 +42,12 @@ public class DefaultOrderService implements OrderService {
         return orderRepository.findOrdersOrderByCreatedAt();
     }
 
+    //to do
+    @Override
+    public List<Order> searchOrdersOrderByCreatedAt(OrderStatus orderStatus) {
+        return null;
+    }
+
     @Override
     public Order searchOrderWithOrderItems(UUID orderId) {
         return orderRepository.findOrderWithOrderItems(orderId)
