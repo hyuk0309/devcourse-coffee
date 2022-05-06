@@ -46,4 +46,9 @@ public class DefaultOrderService implements OrderService {
                 throw new ServiceException(INVALID_ORDER_ID_EXP_MSG.toString());
             });
     }
+
+    @Override
+    public void changeOrderStatus(UUID orderId) {
+        
+    }
 }

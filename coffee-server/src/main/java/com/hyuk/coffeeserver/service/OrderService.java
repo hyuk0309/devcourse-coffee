@@ -13,4 +13,6 @@ public interface OrderService {
     List<Order> searchOrdersOrderByCreatedAt();
 
     Order searchOrderWithOrderItems(UUID orderId);
+
+    void changeOrderStatus(UUID orderId);
 }

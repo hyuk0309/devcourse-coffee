@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -33,5 +34,11 @@ public class OrderController {
         var orderDtoWithItem = toOrderDtoWithItem(orderService.searchOrderWithOrderItems(orderId));
         model.addAttribute("orderDtoWithItem", orderDtoWithItem);
         return "order/order";
+    }
+
+    @PostMapping("/{orderId}/change-status")
+    public String changeOrderStatus(@PathVariable("orderId") UUID orderId) {
+        orderService.changeOrderStatus(orderId);
+        return "redirect:/orders/" + orderId.toString();
     }
 }

@@ -2,7 +2,9 @@ package com.hyuk.coffeeserver.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -75,5 +77,18 @@ class OrderControllerTest {
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("orderDtoWithItem"))
             .andExpect(view().name("order/order"));
+    }
+
+    @Test
+    @DisplayName("주문 상태 변경 요청")
+    void testChangeOrderStatus() throws Exception {
+        //given
+        var orderId = UUID.randomUUID();
+
+        //when
+        //then
+        mockMvc.perform(post("/orders/" + orderId.toString() + "/change-status"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/orders/" + orderId.toString()));
     }
 }
