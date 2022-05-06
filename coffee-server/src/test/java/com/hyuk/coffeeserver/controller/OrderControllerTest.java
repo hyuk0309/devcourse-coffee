@@ -91,4 +91,17 @@ class OrderControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/orders/" + orderId.toString()));
     }
+
+    @Test
+    @DisplayName("주문 삭제 요청")
+    void testRemoveOrder() throws Exception {
+        //given
+        var orderId = UUID.randomUUID();
+
+        //when
+        //then
+        mockMvc.perform(post("/orders/" + orderId.toString() + "/delete"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/orders"));
+    }
 }

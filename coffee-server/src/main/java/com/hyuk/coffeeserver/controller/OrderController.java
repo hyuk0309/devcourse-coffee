@@ -41,4 +41,10 @@ public class OrderController {
         orderService.changeOrderStatus(orderId);
         return "redirect:/orders/" + orderId.toString();
     }
+
+    @PostMapping("/{orderId}/delete")
+    public String removeOrder(@PathVariable("orderId") UUID orderId) {
+        orderService.removeOrder(orderId);
+        return "redirect:/orders";
+    }
 }
