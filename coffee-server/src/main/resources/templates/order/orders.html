@@ -19,6 +19,24 @@
 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
   <a th:href="@{/homes}" class="btn btn-primary me-md-2" type="button">Home</a>
 </div>
+
+<div>
+  <form class="row row-cols-lg-auto g-3 align-items-center">
+    <div class="col-12">
+      <label class="visually-hidden" for="inlineFormSelectPref">Order Status</label>
+      <select name="orderStatus" class="form-select" id="inlineFormSelectPref">
+        <option selected>Choose...</option>
+        <option th:each="status : ${T(com.hyuk.coffeeserver.entity.OrderStatus).values()}"
+                th:value="${status}"
+                th:text="${status}"></option>
+      </select>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+  </form>
+</div>
+
 <table class="table table-hover table-striped">
   <thead>
   <tr>
