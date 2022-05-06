@@ -42,10 +42,9 @@ public class DefaultOrderService implements OrderService {
         return orderRepository.findOrdersOrderByCreatedAt();
     }
 
-    //to do
     @Override
     public List<Order> searchOrdersOrderByCreatedAt(OrderStatus orderStatus) {
-        return null;
+        return orderRepository.findOrdersOrderByCreatedAt(orderStatus);
     }
 
     @Override

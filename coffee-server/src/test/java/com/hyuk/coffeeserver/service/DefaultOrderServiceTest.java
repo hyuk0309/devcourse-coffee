@@ -4,6 +4,7 @@ import static com.hyuk.coffeeserver.exception.ExceptionMessage.INVALID_ORDER_ID_
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -62,6 +63,20 @@ class DefaultOrderServiceTest {
 
         //then
         assertThat(orders).containsExactly(order2, order1);
+    }
+
+    @Test
+    @DisplayName("모든 주문 조회 (생성일 기준 내림 차순) - 특정 상태 주문만")
+    void testSearchOrdersOrderByCreatedAtWithOrderStatusSuccess() {
+        //given
+        given(orderRepository.findOrdersOrderByCreatedAt(any(OrderStatus.class)))
+            .willReturn(anyList());
+
+        //when
+        orderService.searchOrdersOrderByCreatedAt(OrderStatus.ORDERED);
+
+        //then
+        verify(orderRepository).findOrdersOrderByCreatedAt(any(OrderStatus.class));
     }
 
     @Test

@@ -59,6 +59,11 @@ public class NamedJdbcOrderRepository implements OrderRepository {
     }
 
     @Override
+    public List<Order> findOrdersOrderByCreatedAt(OrderStatus orderStatus) {
+        return null;
+    }
+
+    @Override
     public Optional<Order> findOrderWithOrderItems(UUID orderId) {
         var order = jdbcTemplate.query(
             "SELECT o.order_id as order_id, o.nick_name as nick_name, o.order_status as order_status,"
