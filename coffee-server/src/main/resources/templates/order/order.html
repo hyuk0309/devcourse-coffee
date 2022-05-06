@@ -16,24 +16,33 @@
 <body class="contains-fluid">
 <h1>Hyuk's Cafe</h1>
 <h2>Order Management</h2>
-<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+<div th:if="${orderDtoWithItem.orderStatus.equals('FINISHED')}"
+     class="d-grid gap-2 d-md-flex justify-content-md-end">
   <a th:href="'javascript:changeOrderStatus('+'\'' + *{orderId}+'\')'"
-     class="btn btn-primary me-md-2" >Change Order Status</a>
+     class="btn btn-primary me-md-2">Change Order Status</a>
+</div>
+<div th:if="${orderDtoWithItem.orderStatus.equals('ORDERED')}"
+     class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <a th:href="'javascript:deleteOrder('+'\'' + *{orderId}+'\')'"
+     class="btn btn-primary me-md-2">Delete Order</a>
 </div>
 
 <div>
   <label for="orderId">ORDER ID</label>
-  <input type="text" id="orderId" class="form-control" th:value="${orderDtoWithItem.orderId}" readonly>
+  <input type="text" id="orderId" class="form-control" th:value="${orderDtoWithItem.orderId}"
+         readonly>
 </div>
 
 <div>
   <label for="nickName">NICKNAME</label>
-  <input type="text" id="nickName" class="form-control" th:value="${orderDtoWithItem.nickName}" readonly>
+  <input type="text" id="nickName" class="form-control" th:value="${orderDtoWithItem.nickName}"
+         readonly>
 </div>
 
 <div>
   <label for="orderStatus">ORDER STATUS</label>
-  <input type="text" id="orderStatus" class="form-control" th:value="${orderDtoWithItem.orderStatus}" readonly>
+  <input type="text" id="orderStatus" class="form-control"
+         th:value="${orderDtoWithItem.orderStatus}" readonly>
 </div>
 
 <div>
@@ -60,18 +69,27 @@
 
 <div>
   <label for="createdAt">CREATEDAT</label>
-  <input type="text" id="createdAt" class="form-control" th:value="${orderDtoWithItem.createdAt}" readonly>
+  <input type="text" id="createdAt" class="form-control" th:value="${orderDtoWithItem.createdAt}"
+         readonly>
 </div>
 
 <div>
   <label for="updatedAt">UPDATEDAT</label>
-  <input type="text" id="updatedAt" class="form-control" th:value="${orderDtoWithItem.updatedAt}" readonly>
+  <input type="text" id="updatedAt" class="form-control" th:value="${orderDtoWithItem.updatedAt}"
+         readonly>
 </div>
 <script>
   function changeOrderStatus(id) {
     var form = document.createElement("form");
     form.setAttribute("method", "post");
     form.setAttribute("action", "/orders/" + id + "/change-status");
+    document.body.appendChild(form);
+    form.submit();
+  }
+  function deleteOrder(id) {
+    var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "/orders/" + id + "/delete");
     document.body.appendChild(form);
     form.submit();
   }
