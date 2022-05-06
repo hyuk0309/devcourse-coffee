@@ -3,16 +3,20 @@ package com.hyuk.coffeeserver.repository;
 import static com.hyuk.coffeeserver.util.JdbcUtils.toLocalDateTime;
 import static com.hyuk.coffeeserver.util.JdbcUtils.toUUID;
 
+import com.hyuk.coffeeserver.entity.Category;
 import com.hyuk.coffeeserver.entity.NickName;
 import com.hyuk.coffeeserver.entity.Order;
 import com.hyuk.coffeeserver.entity.OrderItem;
 import com.hyuk.coffeeserver.entity.OrderStatus;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -51,6 +55,52 @@ public class NamedJdbcOrderRepository implements OrderRepository {
             orderRowMapper
         );
     }
+
+    @Override
+    public Optional<Order> findOrderWithOrderItems(UUID orderId) {
+        var order = jdbcTemplate.query(
+            "SELECT o.order_id as order_id, o.nick_name as nick_name, o.order_status as order_status,"
+                + " o.created_at as created_at, o.updated_at as updated_at, oi.coffee_id as coffee_id,"
+                + " oi.category as category, oi.price as price, oi.quantity as quantity"
+                + " FROM orders o JOIN order_items oi on o.order_id = oi.order_id"
+                + " WHERE o.order_id = UUID_TO_BIN(:orderId)",
+            Collections.singletonMap("orderId", orderId.toString().getBytes()),
+            extractOrderWithOrderItems);
+        if (order == null) {
+            return Optional.empty();
+        }
+        return Optional.of(order);
+    }
+
+    private static final ResultSetExtractor<Order> extractOrderWithOrderItems = (resultSet) -> {
+        UUID orderId = null;
+        NickName nickName = null;
+        List<OrderItem> orderItems = new ArrayList<>();
+        OrderStatus orderStatus = null;
+        LocalDateTime createdAt = null;
+        LocalDateTime updatedAt = null;
+
+        while (resultSet.next()) {
+            if (orderId == null) {
+                orderId = toUUID(resultSet.getBytes("order_id"));
+                nickName = new NickName(resultSet.getString("nick_name"));
+                orderStatus = OrderStatus.valueOf(resultSet.getString("order_status"));
+                createdAt = toLocalDateTime(resultSet.getTimestamp("created_at"));
+                updatedAt = toLocalDateTime(resultSet.getTimestamp("updated_at"));
+            }
+
+            var coffeeId = toUUID(resultSet.getBytes("coffee_id"));
+            var category = Category.valueOf(resultSet.getString("category"));
+            var price = resultSet.getLong("price");
+            var quantity = resultSet.getInt("quantity");
+            orderItems.add(new OrderItem(coffeeId, category, price, quantity));
+        }
+
+        if (orderId == null) {
+            return null;
+        }
+        return new Order(orderId, nickName, orderItems, orderStatus, createdAt, updatedAt);
+    };
 
     private static final RowMapper<Order> orderRowMapper = (resultSet, i) -> {
         var orderId = toUUID(resultSet.getBytes("order_id"));

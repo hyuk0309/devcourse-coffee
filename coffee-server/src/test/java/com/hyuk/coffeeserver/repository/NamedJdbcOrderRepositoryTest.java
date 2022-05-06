@@ -126,6 +126,46 @@ class NamedJdbcOrderRepositoryTest {
         assertThat(orders.size()).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("특정 주문 주문한 아이템과 함께 조회 - 주문 존재")
+    void testFindOrdersOrderByCreatedAtWhenExist() {
+        //given
+        var orderItems = List.of(
+            new OrderItem(coffee.getId(), coffee.getCategory(), coffee.getPrice(), 1));
+
+        var order = new Order(
+            UUID.randomUUID(),
+            new NickName("test"),
+            orderItems,
+            OrderStatus.ORDERED,
+            LocalDateTime.now(),
+            LocalDateTime.now());
+        orderRepository.insert(order);
+
+        //when
+        var retrievedOrder = orderRepository.findOrderWithOrderItems(order.getOrderId());
+
+        //then
+        assertAll(
+            () -> assertThat(retrievedOrder).isNotEmpty(),
+            () -> assertThat(retrievedOrder.get().getOrderId()).isEqualTo(order.getOrderId()),
+            () -> assertThat(retrievedOrder.get().getOrderItems().size()).isEqualTo(1),
+            () -> assertThat(retrievedOrder.get().getOrderItems().get(0).getCoffeeId())
+                .isEqualTo(coffee.getId())
+        );
+    }
+
+    @Test
+    @DisplayName("특정 주문 주문한 아이템과 함께 조회 - 주문 존재 x")
+    void testFindOrdersOrderByCreatedAtWhenNoExist() {
+        //given
+        //when
+        var retrievedOrder = orderRepository.findOrderWithOrderItems(UUID.randomUUID());
+
+        //then
+        assertThat(retrievedOrder).isEmpty();
+    }
+
     @Configuration
     static class Config {
 
