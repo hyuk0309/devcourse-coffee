@@ -17,4 +17,20 @@ public class OrderDto {
         this.orderStatus = orderStatus;
         this.createdAt = createdAt;
     }
+
+    public UUID getOrderId() {
+        return orderId;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }
