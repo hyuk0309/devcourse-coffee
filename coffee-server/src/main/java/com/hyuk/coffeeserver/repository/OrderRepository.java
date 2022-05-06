@@ -14,4 +14,6 @@ public interface OrderRepository {
     Optional<Order> findOrderWithOrderItems(UUID orderId);
 
     void updateOrderStatusByOrderId(UUID orderId);
+
+    void deleteOrderAndOrderItems(UUID orderId);
 }

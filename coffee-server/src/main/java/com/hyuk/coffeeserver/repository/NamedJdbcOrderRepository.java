@@ -1,5 +1,6 @@
 package com.hyuk.coffeeserver.repository;
 
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_DELETED_EXP_MSG;
 import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_UPDATED_EXP_MSG;
 import static com.hyuk.coffeeserver.util.JdbcUtils.toLocalDateTime;
 import static com.hyuk.coffeeserver.util.JdbcUtils.toUUID;
@@ -80,6 +81,16 @@ public class NamedJdbcOrderRepository implements OrderRepository {
             Collections.singletonMap("orderId", orderId.toString().getBytes()));
         if (update != 1) {
             throw new RuntimeException(NOTHING_WAS_UPDATED_EXP_MSG.toString());
+        }
+    }
+
+    @Override
+    public void deleteOrderAndOrderItems(UUID orderId) {
+        var delete = jdbcTemplate.update(
+            "DELETE FROM orders WHERE order_id = UUID_TO_BIN(:orderId)",
+            Collections.singletonMap("orderId", orderId.toString().getBytes()));
+        if (delete != 1) {
+            throw new RuntimeException(NOTHING_WAS_DELETED_EXP_MSG.toString());
         }
     }
 

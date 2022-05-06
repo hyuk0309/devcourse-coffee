@@ -1,5 +1,6 @@
 package com.hyuk.coffeeserver.repository;
 
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_DELETED_EXP_MSG;
 import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_UPDATED_EXP_MSG;
 import static com.wix.mysql.EmbeddedMysql.anEmbeddedMysql;
 import static com.wix.mysql.ScriptResolver.classPathScript;
@@ -206,6 +207,41 @@ class NamedJdbcOrderRepositoryTest {
         assertThatThrownBy(() -> orderRepository.updateOrderStatusByOrderId(invalidId))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining(NOTHING_WAS_UPDATED_EXP_MSG.toString());
+    }
+
+    @Test
+    @DisplayName("주문 삭제 성공")
+    void testDeleteOrderAndOrderItemsSuccess() {
+        //given
+        var orderItems = List.of(
+            new OrderItem(coffee.getId(), coffee.getCategory(), coffee.getPrice(), 1));
+
+        var order = new Order(
+            UUID.randomUUID(),
+            new NickName("test"),
+            orderItems,
+            OrderStatus.ORDERED,
+            LocalDateTime.now(),
+            LocalDateTime.now());
+        orderRepository.insert(order);
+
+        //when
+        orderRepository.deleteOrderAndOrderItems(order.getOrderId());
+
+        //then
+        var retrievedOrder = orderRepository.findOrderWithOrderItems(order.getOrderId());
+        assertThat(retrievedOrder).isEmpty();
+    }
+
+    @Test
+    @DisplayName("주문 삭제 실패")
+    void testDeleteOrderAndOrderItemsFailBecauseNotExist() {
+        //given
+        //when
+        //then
+        assertThatThrownBy(() -> orderRepository.deleteOrderAndOrderItems(UUID.randomUUID()))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining(NOTHING_WAS_DELETED_EXP_MSG.toString());
     }
 
     @Configuration
