@@ -1,9 +1,12 @@
 package com.hyuk.coffeeserver.service;
 
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.INVALID_ORDER_ID_EXP_MSG;
+
 import com.hyuk.coffeeserver.entity.NickName;
 import com.hyuk.coffeeserver.entity.Order;
 import com.hyuk.coffeeserver.entity.OrderItem;
 import com.hyuk.coffeeserver.entity.OrderStatus;
+import com.hyuk.coffeeserver.exception.ServiceException;
 import com.hyuk.coffeeserver.repository.OrderRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,5 +37,13 @@ public class DefaultOrderService implements OrderService {
     @Override
     public List<Order> searchOrdersOrderByCreatedAt() {
         return orderRepository.findOrdersOrderByCreatedAt();
+    }
+
+    @Override
+    public Order searchOrderWithOrderItems(UUID orderId) {
+        return orderRepository.findOrderWithOrderItems(orderId)
+            .orElseThrow(() -> {
+                throw new ServiceException(INVALID_ORDER_ID_EXP_MSG.toString());
+            });
     }
 }
