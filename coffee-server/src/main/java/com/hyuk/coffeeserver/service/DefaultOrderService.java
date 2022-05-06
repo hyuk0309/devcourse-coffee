@@ -55,4 +55,10 @@ public class DefaultOrderService implements OrderService {
     public void changeOrderStatus(UUID orderId) {
         orderRepository.updateOrderStatusByOrderId(orderId);
     }
+
+    @Override
+    @Transactional
+    public void removeOrder(UUID orderId) {
+        orderRepository.deleteOrderAndOrderItems(orderId);
+    }
 }

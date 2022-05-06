@@ -118,4 +118,17 @@ class DefaultOrderServiceTest {
         //then
         verify(orderRepository).updateOrderStatusByOrderId(orderId);
     }
+
+    @Test
+    @DisplayName("주문 삭제")
+    void testRemoveOrder() {
+        //given
+        var orderId = UUID.randomUUID();
+
+        //when
+        orderService.removeOrder(orderId);
+
+        //then
+        verify(orderRepository).deleteOrderAndOrderItems(orderId);
+    }
 }

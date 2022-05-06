@@ -15,4 +15,6 @@ public interface OrderService {
     Order searchOrderWithOrderItems(UUID orderId);
 
     void changeOrderStatus(UUID orderId);
+
+    void removeOrder(UUID orderId);
 }
