@@ -1,10 +1,12 @@
 package com.hyuk.coffeeserver.repository;
 
+import static com.hyuk.coffeeserver.exception.ExceptionMessage.NOTHING_WAS_UPDATED_EXP_MSG;
 import static com.wix.mysql.EmbeddedMysql.anEmbeddedMysql;
 import static com.wix.mysql.ScriptResolver.classPathScript;
 import static com.wix.mysql.config.MysqldConfig.aMysqldConfig;
 import static com.wix.mysql.distribution.Version.v8_0_11;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.hyuk.coffeeserver.entity.Category;
@@ -164,6 +166,46 @@ class NamedJdbcOrderRepositoryTest {
 
         //then
         assertThat(retrievedOrder).isEmpty();
+    }
+
+    @Test
+    @DisplayName("ORDERED 주문 FINISHED로 상태 변경")
+    void testUpdateOrderStatusByOrderIdSuccess() {
+        //given
+        var orderItems = List.of(
+            new OrderItem(coffee.getId(), coffee.getCategory(), coffee.getPrice(), 1));
+
+        var order = new Order(
+            UUID.randomUUID(),
+            new NickName("test"),
+            orderItems,
+            OrderStatus.ORDERED,
+            LocalDateTime.now(),
+            LocalDateTime.now());
+        orderRepository.insert(order);
+
+        //when
+        orderRepository.updateOrderStatusByOrderId(order.getOrderId());
+
+        //then
+        var retrievedOrder = orderRepository.findOrderWithOrderItems(order.getOrderId());
+        assertAll(
+            () -> assertThat(retrievedOrder).isNotEmpty(),
+            () -> assertThat(retrievedOrder.get().getOrderStatus()).isEqualTo(OrderStatus.FINISHED)
+        );
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 주문 상태 변경")
+    void testUpdateOrderStatusByOrderIdFailBecauseNotExistOrderId() {
+        //given
+        var invalidId = UUID.randomUUID();
+
+        //when
+        //then
+        assertThatThrownBy(() -> orderRepository.updateOrderStatusByOrderId(invalidId))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining(NOTHING_WAS_UPDATED_EXP_MSG.toString());
     }
 
     @Configuration
