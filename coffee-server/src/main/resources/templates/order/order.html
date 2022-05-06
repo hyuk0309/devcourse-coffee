@@ -16,12 +16,12 @@
 <body class="contains-fluid">
 <h1>Hyuk's Cafe</h1>
 <h2>Order Management</h2>
-<div th:if="${orderDtoWithItem.orderStatus.equals('FINISHED')}"
+<div th:if="${orderDtoWithItem.orderStatus.equals('ORDERED')}"
      class="d-grid gap-2 d-md-flex justify-content-md-end">
   <a th:href="'javascript:changeOrderStatus('+'\'' + *{orderId}+'\')'"
      class="btn btn-primary me-md-2">Change Order Status</a>
 </div>
-<div th:if="${orderDtoWithItem.orderStatus.equals('ORDERED')}"
+<div th:if="${orderDtoWithItem.orderStatus.equals('FINISHED')}"
      class="d-grid gap-2 d-md-flex justify-content-md-end">
   <a th:href="'javascript:deleteOrder('+'\'' + *{orderId}+'\')'"
      class="btn btn-primary me-md-2">Delete Order</a>
