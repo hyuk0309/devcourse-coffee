@@ -42,7 +42,7 @@ Thymeleaf를 이용해 만든 관리자 페이지에서 커피 상품에 대해 
 
 도메인 설계도
 
-![도메인설계도](https://user-images.githubusercontent.com/29492667/167259964-3ea6f66c-c5a9-47fa-bc66-9f86b9a258b3.png)
+![도메인설계도](https://user-images.githubusercontent.com/29492667/167262505-afb05744-b188-42c2-9384-ca12ac9b4825.png)
 
 <br/>
 
