@@ -40,7 +40,7 @@ Thymeleaf를 이용해 만든 관리자 페이지에서 커피 상품에 대해 
 
 <br/>
 
-도메인 UML
+도메인 설계도
 
 ![도메인설계도](https://user-images.githubusercontent.com/29492667/167259964-3ea6f66c-c5a9-47fa-bc66-9f86b9a258b3.png)
 
@@ -73,7 +73,7 @@ Thymeleaf를 이용해 만든 관리자 페이지에서 커피 상품에 대해 
 - 커피 생성 요청
   - HTTP Method: Post, URI: http://localhost:8080/coffees/new
 - 커피 삭제 요청
-  - HTTP Method: Post URI: http://localhost:8080/coffees/{coffeeId}/delete
+  - HTTP Method: Post, URI: http://localhost:8080/coffees/{coffeeId}/delete
 
 **주문**
 
@@ -98,5 +98,5 @@ Thymeleaf를 이용해 만든 관리자 페이지에서 커피 상품에 대해 
   - HTTP Method: GET, URI: http://localhost:8080/api/v1/coffees
 
 - 주문 생성
-  - HTTP Method:POST, URI: http://localhost:8080/api/v1/orders
+  - HTTP Method: POST, URI: http://localhost:8080/api/v1/orders
 
