@@ -54,7 +54,7 @@ Thymeleaf를 이용해 만든 관리자 페이지에서 커피 상품에 대해 
 
 프로젝트 설계도
 
-![프로젝트설계도](https://user-images.githubusercontent.com/29492667/167260183-bc7a55cb-b398-413c-a9dd-4a4fd5dba1e3.png)
+![class](https://user-images.githubusercontent.com/29492667/171359878-e3a4a51c-ec0e-4f6b-a6db-ecd6718c2e80.png)
 
 <br/>
 
